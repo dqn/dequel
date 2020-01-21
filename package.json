@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start_test": "docker run --name dequel_test_db -e POSTGRES_PASSWORD=dequel -p 54320:5432 -d postgres:12.1-alpine",
+    "end_test": "docker rm dequel_test_db -f",
+    "test": "node test/test.js"
   },
   "repository": {
     "type": "git",
