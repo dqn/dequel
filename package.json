@@ -1,0 +1,23 @@
+{
+  "name": "dequel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dqn/dequel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dqn/dequel/issues"
+  },
+  "homepage": "https://github.com/dqn/dequel#readme",
+  "dependencies": {
+    "pg": "^7.17.1"
+  }
+}
