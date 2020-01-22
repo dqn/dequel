@@ -119,3 +119,12 @@ describe('where', () => {
     expect(rows.length).toBe(2);
   });
 });
+
+describe('find', () => {
+  test('find', async () => {
+    const created = await Test.create({ test_text: 'test of find' });
+    const found = await Test.find(created.id);
+
+    expect(found.test_text).toBe('test of find');
+  });
+});
