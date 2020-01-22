@@ -56,3 +56,9 @@ test('create', async () => {
 
   expect(count).toBe(2);
 });
+
+test('where', async () => {
+  const rows = await Test.where('id = $1', 1);
+
+  expect(rows.length).toBe(1);
+});
