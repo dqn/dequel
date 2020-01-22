@@ -13,3 +13,19 @@ CREATE TABLE tests (
   test_timestamptz TIMESTAMPTZ NOT NULL DEFAULT '-infinity',
   PRIMARY KEY(id)
 );
+
+INSERT INTO tests (
+  test_text,
+  test_bigint,
+  test_boolean,
+  test_jsonb,
+  test_text_array,
+  test_timestamptz
+) VALUES (
+  'hello',
+  42,
+  TRUE,
+  '{"foo":"bar"}',
+  '{"Node.js","PostgreSQL","dequel"}',
+  NOW()
+);
