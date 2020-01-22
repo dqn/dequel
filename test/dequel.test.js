@@ -4,18 +4,7 @@ const dequel = require('..');
 
 const fs = require('fs');
 
-class Test extends dequel.Model {
-  static columns = [
-    'id',
-    'test_text',
-    'test_bigint',
-    'test_boolean',
-    'test_jsonb',
-    'test_text_array',
-    'test_timestamptz',
-  ];
-  static primaryKey = 'id';
-}
+class Test extends dequel.Model {}
 
 const pool = new dequel.Pool({
   user: 'postgres',
@@ -31,7 +20,7 @@ async function initialize() {
 
   await pool.query(sql);
 
-  Test.init(pool);
+  await Test.initialize(pool);
 }
 
 afterAll(() => {
@@ -40,6 +29,24 @@ afterAll(() => {
 
 beforeEach(() => {
   return initialize();
+});
+
+describe('table', () => {
+  test('columns', () => {
+    expect(Test.columns).toEqual([
+      'id',
+      'test_text',
+      'test_bigint',
+      'test_boolean',
+      'test_jsonb',
+      'test_text_array',
+      'test_timestamptz',
+    ]);
+  });
+
+  test('primary key', () => {
+    expect(Test.primaryKey).toEqual('id');
+  });
 });
 
 describe('take', () => {
