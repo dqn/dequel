@@ -54,15 +54,45 @@ describe('table', () => {
 });
 
 describe('select', () => {
-  test('columns', async () => {
-    const records = await Test.select({
-      columns: [ 'id', 'test_bigint' ],
-    });
+  test('columns array', async () => {
+    const records = await Test.select([ 'id', 'test_bigint' ]);
 
     for (const row of records) {
       expect(row).toEqual(new Test({
         id: expect.anything(),
         test_bigint: expect.anything(),
+      }));
+    }
+  });
+
+  test('columns null', async () => {
+    const records = await Test.select(null);
+
+    for (const row of records) {
+      expect(row).toEqual(new Test({
+        id: expect.anything(),
+        test_text: expect.anything(),
+        test_bigint: expect.anything(),
+        test_boolean: expect.anything(),
+        test_jsonb: expect.anything(),
+        test_text_array: expect.anything(),
+        test_timestamptz: expect.anything(),
+      }));
+    }
+  });
+
+  test('columns *', async () => {
+    const records = await Test.select('*');
+
+    for (const row of records) {
+      expect(row).toEqual(new Test({
+        id: expect.anything(),
+        test_text: expect.anything(),
+        test_bigint: expect.anything(),
+        test_boolean: expect.anything(),
+        test_jsonb: expect.anything(),
+        test_text_array: expect.anything(),
+        test_timestamptz: expect.anything(),
       }));
     }
   });
@@ -74,10 +104,7 @@ describe('select', () => {
       new Test({ test_bigint: 42 }).save(),
     ]);
 
-    const records = await Test.select({
-      clause: 'WHERE test_bigint = $1',
-      values: [ 23 ],
-    });
+    const records = await Test.select(null, 'WHERE test_bigint = $1', 23);
 
     for (const row of records) {
       expect(row).toEqual(new Test({
@@ -248,6 +275,22 @@ describe('all', () => {
     const allRecords = await Test.all();
 
     expect(allRecords.length).toBe(count + 5);
+  });
+});
+
+describe('delete', () => {
+  test('delete', async () => {
+    await Promise.all([
+      Test.create(),
+      Test.create(),
+      Test.create(),
+      Test.create(),
+      Test.create(),
+    ]);
+
+    await Test.delete('WHERE id <> $1', 1);
+
+    expect(await Test.count()).toBe(1);
   });
 });
 
