@@ -103,6 +103,25 @@ describe('create', () => {
       test_timestamptz: expect.anything(),
     }));
   });
+
+  test('default', async () => {
+    const params = {
+      test_bigint: 42,
+      test_jsonb: { foo: 'bar' },
+    };
+
+    const record = await Test.create(params);
+
+    expect(record).toEqual(new Test({
+      id: '2',
+      test_text: '',
+      test_bigint: '42',
+      test_boolean: false,
+      test_jsonb: { foo: 'bar' },
+      test_text_array: [],
+      test_timestamptz: -Infinity,
+    }));
+  });
 });
 
 describe('where', () => {
