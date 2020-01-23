@@ -49,6 +49,46 @@ describe('table', () => {
   });
 });
 
+describe('select', () => {
+  test('columns', async () => {
+    const records = await Test.select({
+      columns: [ 'id', 'test_bigint' ],
+    });
+
+    for (const row of records) {
+      expect(row).toEqual(new Test({
+        id: expect.anything(),
+        test_bigint: expect.anything(),
+      }));
+    }
+  });
+
+  test('clause and values', async () => {
+    await Promise.all([
+      new Test({ test_bigint: 23 }).save(),
+      new Test({ test_bigint: 23 }).save(),
+      new Test({ test_bigint: 42 }).save(),
+    ]);
+
+    const records = await Test.select({
+      clause: 'WHERE test_bigint = $1',
+      values: [ 23 ],
+    });
+
+    for (const row of records) {
+      expect(row).toEqual(new Test({
+        id: expect.anything(),
+        test_text: expect.anything(),
+        test_bigint: '23',
+        test_boolean: expect.anything(),
+        test_jsonb: expect.anything(),
+        test_text_array: expect.anything(),
+        test_timestamptz: expect.anything(),
+      }));
+    }
+  });
+});
+
 describe('take', () => {
   test('take test data', async () => {
     const record = await Test.take();
@@ -133,16 +173,16 @@ describe('where', () => {
       Test.create({ test_bigint: 42 }),
     ]);
 
-    const rows = await Test.where('test_bigint = $1', 23);
+    const records = await Test.where('test_bigint = $1', 23);
 
-    expect(rows.length).toBe(2);
+    expect(records.length).toBe(2);
   });
 });
 
 describe('find', () => {
   test('find', async () => {
     const created = await Test.create({ test_text: 'test of find' });
-    const found = await Test.find(created.id);
+    const found = await Test.find('id = $1', created.id);
 
     expect(found.test_text).toBe('test of find');
   });
@@ -174,7 +214,7 @@ describe('save', () => {
     });
     await record.save();
 
-    const found = await Test.find(2);
+    const found = await Test.find('id = $1', 2);
 
     expect(found).toEqual(new Test({
       id: expect.anything(),
@@ -198,7 +238,7 @@ describe('save', () => {
     });
     await record.save();
 
-    const found = await Test.find(1);
+    const found = await Test.find('id = $1', 1);
 
     expect(found).toEqual(new Test({
       id: '1',
@@ -224,7 +264,7 @@ describe('toObject', () => {
     };
 
     await Test.create(params);
-    const found = await Test.find(2);
+    const found = await Test.find('id = $1', 2);
 
     expect(found.toObject()).toEqual({
       id: '2',
