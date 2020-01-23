@@ -32,6 +32,10 @@ beforeEach(() => {
 });
 
 describe('table', () => {
+  test('table name', () => {
+    expect(Test.tableName).toBe('tests');
+  });
+
   test('columns', () => {
     expect(Test.columns).toEqual([
       'id',
