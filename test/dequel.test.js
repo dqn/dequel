@@ -234,6 +234,23 @@ describe('find', () => {
   });
 });
 
+describe('all', () => {
+  test('all', async () => {
+    const count = await Test.count();
+    await Promise.all([
+      Test.create(),
+      Test.create(),
+      Test.create(),
+      Test.create(),
+      Test.create(),
+    ]);
+
+    const allRecords = await Test.all();
+
+    expect(allRecords.length).toBe(count + 5);
+  });
+});
+
 describe('save', () => {
   test('save', async () => {
     const record = new Test({
@@ -295,6 +312,15 @@ describe('save', () => {
       test_text_array: [ 'wan', 'nyan' ],
       test_timestamptz: expect.anything(),
     }));
+  });
+});
+
+describe('destroy', () => {
+  test('destroy', async () => {
+    const record = await Test.find('id = $1', 1);
+    await record.destroy();
+
+    expect(await Test.find('id = $1', 1)).toBeUndefined();
   });
 });
 
