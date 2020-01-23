@@ -147,3 +147,67 @@ describe('find', () => {
     expect(found.test_text).toBe('test of find');
   });
 });
+
+describe('save', () => {
+  test('save', async () => {
+    const record = new Test({
+      test_text: 'test of save save',
+    });
+    const saved = await record.save();
+
+    expect(saved).toEqual(new Test({
+      id: expect.anything(),
+      test_text: 'test of save save',
+      test_bigint: expect.anything(),
+      test_boolean: expect.anything(),
+      test_jsonb: expect.anything(),
+      test_text_array: expect.anything(),
+      test_timestamptz: expect.anything(),
+    }));
+  });
+
+  test('create', async () => {
+    const record = new Test({
+      test_text: 'test of save create',
+      test_bigint: 123,
+      test_boolean: true,
+    });
+    await record.save();
+
+    const found = await Test.find(2);
+
+    expect(found).toEqual(new Test({
+      id: expect.anything(),
+      test_text: 'test of save create',
+      test_bigint: '123',
+      test_boolean: true,
+      test_jsonb: expect.anything(),
+      test_text_array: expect.anything(),
+      test_timestamptz: expect.anything(),
+    }));
+  });
+
+  test('update', async () => {
+    const record = new Test({
+      id: 1,
+      test_text: 'test of save update',
+      test_bigint: 456,
+      test_boolean: false,
+      test_jsonb: { fizz: 'bazz' },
+      test_text_array: [ 'wan', 'nyan' ],
+    });
+    await record.save();
+
+    const found = await Test.find(1);
+
+    expect(found).toEqual(new Test({
+      id: '1',
+      test_text: 'test of save update',
+      test_bigint: '456',
+      test_boolean: false,
+      test_jsonb: { fizz: 'bazz' },
+      test_text_array: [ 'wan', 'nyan' ],
+      test_timestamptz: expect.anything(),
+    }));
+  });
+});
