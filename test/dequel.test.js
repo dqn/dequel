@@ -162,6 +162,48 @@ describe('create', () => {
       test_timestamptz: -Infinity,
     }));
   });
+
+  test('conflict nothing 1', async () => {
+    const count = await Test.count();
+    await Test.create({ id: 1 }, { onConflict: 'nothing' });
+
+    expect(await Test.count()).toBe(count);
+  });
+
+  test('conflict nothing 2', async () => {
+    const count = await Test.count();
+    await Test.create({ id: 2 }, { onConflict: 'nothing' });
+
+    expect(await Test.count()).toBe(count + 1);
+  });
+
+  test('conflict update 1', async () => {
+    const count = await Test.count();
+    const params = {
+      id: 1,
+      test_text: 'test of conflict update 1',
+    };
+
+    await Test.create(params, { onConflict: 'update' });
+
+    expect(await Test.count()).toBe(count);
+    expect(await Test.find('id = $1', 1)).toEqual(new Test({
+      id: '1',
+      test_text: 'test of conflict update 1',
+      test_bigint: '42',
+      test_boolean: true,
+      test_jsonb: { foo: 'bar' },
+      test_text_array: [ 'Node.js', 'PostgreSQL', 'dequel' ],
+      test_timestamptz: expect.anything(),
+    }));
+  });
+
+  test('conflict update 2', async () => {
+    const count = await Test.count();
+    await Test.create({ id: 2 }, { onConflict: 'update' });
+
+    expect(await Test.count()).toBe(count + 1);
+  });
 });
 
 describe('where', () => {
