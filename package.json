@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start_test": "docker run --name dequel_test_db -e POSTGRES_PASSWORD=dequel -p 54320:5432 -d postgres:12.1-alpine",
-    "end_test": "docker rm dequel_test_db -f",
+    "start_test_db": "docker run --name dequel_test_db -e POSTGRES_PASSWORD=dequel -p 54320:5432 -d postgres:12.1-alpine",
+    "end_test_db": "docker rm dequel_test_db -f",
     "test": "jest"
   },
   "repository": {
