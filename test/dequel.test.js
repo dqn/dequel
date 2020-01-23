@@ -211,3 +211,29 @@ describe('save', () => {
     }));
   });
 });
+
+describe('toObject', () => {
+  test('toObject', async () => {
+    const params = {
+      test_text: 'xxx',
+      test_bigint: 23,
+      test_boolean: true,
+      test_jsonb: { foo: 'bar' },
+      test_text_array: [ 'aaa', 'bbb', 'ccc' ],
+      test_timestamptz: new Date(),
+    };
+
+    await Test.create(params);
+    const found = await Test.find(2);
+
+    expect(found.toObject()).toEqual({
+      id: '2',
+      test_text: 'xxx',
+      test_bigint: '23',
+      test_boolean: true,
+      test_jsonb: { foo: 'bar' },
+      test_text_array: [ 'aaa', 'bbb', 'ccc' ],
+      test_timestamptz: expect.anything(),
+    });
+  });
+});
