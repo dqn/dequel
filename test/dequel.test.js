@@ -145,7 +145,7 @@ describe('count', () => {
 
   test('increment count', async () => {
     const count = await Test.count();
-    await Test.create();
+    await Test.insert();
 
     expect(await Test.count()).toBe(count + 1);
   });
@@ -157,8 +157,8 @@ describe('count', () => {
   });
 });
 
-describe('create', () => {
-  test('create', async () => {
+describe('insert', () => {
+  test('insert', async () => {
     const params = {
       test_text: 'xxx',
       test_bigint: 23,
@@ -168,7 +168,7 @@ describe('create', () => {
       test_timestamptz: new Date(),
     };
 
-    const record = await Test.create(params);
+    const record = await Test.insert(params);
 
     expect(record).toEqual(new Test({
       id: '2',
@@ -187,7 +187,7 @@ describe('create', () => {
       test_jsonb: { foo: 'bar' },
     };
 
-    const record = await Test.create(params);
+    const record = await Test.insert(params);
 
     expect(record).toEqual(new Test({
       id: '2',
@@ -202,14 +202,14 @@ describe('create', () => {
 
   test('conflict nothing 1', async () => {
     const count = await Test.count();
-    await Test.create({ id: 1 }, { onConflict: 'nothing' });
+    await Test.insert({ id: 1 }, { onConflict: 'nothing' });
 
     expect(await Test.count()).toBe(count);
   });
 
   test('conflict nothing 2', async () => {
     const count = await Test.count();
-    await Test.create({ id: 2 }, { onConflict: 'nothing' });
+    await Test.insert({ id: 2 }, { onConflict: 'nothing' });
 
     expect(await Test.count()).toBe(count + 1);
   });
@@ -221,7 +221,7 @@ describe('create', () => {
       test_text: 'test of conflict update 1',
     };
 
-    await Test.create(params, { onConflict: 'update' });
+    await Test.insert(params, { onConflict: 'update' });
 
     expect(await Test.count()).toBe(count);
     expect(await Test.find('id = $1', 1)).toEqual(new Test({
@@ -237,7 +237,7 @@ describe('create', () => {
 
   test('conflict update 2', async () => {
     const count = await Test.count();
-    await Test.create({ id: 2 }, { onConflict: 'update' });
+    await Test.insert({ id: 2 }, { onConflict: 'update' });
 
     expect(await Test.count()).toBe(count + 1);
   });
@@ -246,11 +246,11 @@ describe('create', () => {
 describe('update', () => {
   test('update all', async () => {
     await Promise.all([
-      Test.create(),
-      Test.create(),
-      Test.create(),
-      Test.create(),
-      Test.create(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
     ]);
 
     await Test.update({
@@ -266,9 +266,9 @@ describe('update', () => {
 
   test('returned records', async () => {
     await Promise.all([
-      Test.create(),
-      Test.create(),
-      Test.create(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
     ]);
 
     const records = await Test.update({
@@ -293,11 +293,11 @@ describe('update', () => {
 
   test('update with condition', async () => {
     await Promise.all([
-      Test.create({ test_text: 'A' }),
-      Test.create({ test_text: 'A' }),
-      Test.create({ test_text: 'A' }),
-      Test.create({ test_text: 'B' }),
-      Test.create({ test_text: 'B' }),
+      Test.insert({ test_text: 'A' }),
+      Test.insert({ test_text: 'A' }),
+      Test.insert({ test_text: 'A' }),
+      Test.insert({ test_text: 'B' }),
+      Test.insert({ test_text: 'B' }),
     ]);
 
     await Test.update({ test_text: 'C' }, 'test_text = $1', 'A');
@@ -311,10 +311,10 @@ describe('update', () => {
 describe('where', () => {
   test('where', async () => {
     await Promise.all([
-      Test.create({ test_bigint: 1 }),
-      Test.create({ test_bigint: 23 }),
-      Test.create({ test_bigint: 23 }),
-      Test.create({ test_bigint: 42 }),
+      Test.insert({ test_bigint: 1 }),
+      Test.insert({ test_bigint: 23 }),
+      Test.insert({ test_bigint: 23 }),
+      Test.insert({ test_bigint: 42 }),
     ]);
 
     const records = await Test.where('test_bigint = $1', 23);
@@ -325,8 +325,8 @@ describe('where', () => {
 
 describe('find', () => {
   test('find', async () => {
-    const created = await Test.create({ test_text: 'test of find' });
-    const found = await Test.find('id = $1', created.id);
+    const insertd = await Test.insert({ test_text: 'test of find' });
+    const found = await Test.find('id = $1', insertd.id);
 
     expect(found.test_text).toBe('test of find');
   });
@@ -336,11 +336,11 @@ describe('all', () => {
   test('all', async () => {
     const count = await Test.count();
     await Promise.all([
-      Test.create(),
-      Test.create(),
-      Test.create(),
-      Test.create(),
-      Test.create(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
     ]);
 
     const allRecords = await Test.all();
@@ -352,11 +352,11 @@ describe('all', () => {
 describe('delete', () => {
   test('delete', async () => {
     await Promise.all([
-      Test.create(),
-      Test.create(),
-      Test.create(),
-      Test.create(),
-      Test.create(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
     ]);
 
     await Test.delete('WHERE id <> $1', 1);
@@ -383,9 +383,9 @@ describe('save', () => {
     }));
   });
 
-  test('create', async () => {
+  test('insert', async () => {
     const record = new Test({
-      test_text: 'test of save create',
+      test_text: 'test of save insert',
       test_bigint: 123,
       test_boolean: true,
     });
@@ -395,7 +395,7 @@ describe('save', () => {
 
     expect(found).toEqual(new Test({
       id: expect.anything(),
-      test_text: 'test of save create',
+      test_text: 'test of save insert',
       test_bigint: '123',
       test_boolean: true,
       test_jsonb: expect.anything(),
@@ -449,7 +449,7 @@ describe('toObject', () => {
       test_timestamptz: new Date(),
     };
 
-    await Test.create(params);
+    await Test.insert(params);
     const found = await Test.find('id = $1', 2);
 
     expect(found.toObject()).toEqual({
