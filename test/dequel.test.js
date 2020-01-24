@@ -418,7 +418,7 @@ describe('save', () => {
     }));
   });
 
-  test('update', async () => {
+  test('update 1', async () => {
     const record = new Test({
       id: 1,
       test_text: 'test of save update',
@@ -438,6 +438,24 @@ describe('save', () => {
       test_boolean: false,
       test_jsonb: { fizz: 'bazz' },
       test_text_array: [ 'wan', 'nyan' ],
+      test_timestamptz: expect.anything(),
+    }));
+  });
+
+  test('update 2', async () => {
+    const record = await Test.find('id = $1', 1);
+    record.test_text = 'test of save update 2';
+    await record.save();
+
+    const record2 = await Test.find('id = $1', 1);
+
+    expect(record2).toEqual(new Test({
+      id: expect.anything(),
+      test_text: 'test of save update 2',
+      test_bigint: expect.anything(),
+      test_boolean: expect.anything(),
+      test_jsonb: expect.anything(),
+      test_text_array: expect.anything(),
       test_timestamptz: expect.anything(),
     }));
   });
