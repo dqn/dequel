@@ -149,6 +149,12 @@ describe('count', () => {
 
     expect(await Test.count()).toBe(count + 1);
   });
+
+  test('count with condition', async () => {
+    const count = await Test.count('id = $1', 0);
+
+    expect(count).toBe(0);
+  });
 });
 
 describe('create', () => {
@@ -234,6 +240,71 @@ describe('create', () => {
     await Test.create({ id: 2 }, { onConflict: 'update' });
 
     expect(await Test.count()).toBe(count + 1);
+  });
+});
+
+describe('update', () => {
+  test('update all', async () => {
+    await Promise.all([
+      Test.create(),
+      Test.create(),
+      Test.create(),
+      Test.create(),
+      Test.create(),
+    ]);
+
+    await Test.update({
+      test_text: 'test of update update all',
+    });
+
+    const records = await Test.select('test_text');
+
+    for (const record of records) {
+      expect(record).toEqual({ test_text: 'test of update update all' });
+    }
+  });
+
+  test('returned records', async () => {
+    await Promise.all([
+      Test.create(),
+      Test.create(),
+      Test.create(),
+    ]);
+
+    const records = await Test.update({
+      test_text: 'test of update returned records',
+    });
+    const count = await Test.count('test_text = $1', 'test of update returned records');
+
+    expect(records.length).toBe(count);
+
+    for (const record of records) {
+      expect(record).toEqual({
+        id: expect.anything(),
+        test_text: 'test of update returned records',
+        test_bigint: expect.anything(),
+        test_boolean: expect.anything(),
+        test_jsonb: expect.anything(),
+        test_text_array: expect.anything(),
+        test_timestamptz: expect.anything(),
+      });
+    }
+  });
+
+  test('update with condition', async () => {
+    await Promise.all([
+      Test.create({ test_text: 'A' }),
+      Test.create({ test_text: 'A' }),
+      Test.create({ test_text: 'A' }),
+      Test.create({ test_text: 'B' }),
+      Test.create({ test_text: 'B' }),
+    ]);
+
+    await Test.update({ test_text: 'C' }, 'test_text = $1', 'A');
+
+    expect(await Test.count('test_text = $1', 'A')).toBe(0);
+    expect(await Test.count('test_text = $1', 'B')).toBe(2);
+    expect(await Test.count('test_text = $1', 'C')).toBe(3);
   });
 });
 
