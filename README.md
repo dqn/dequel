@@ -26,7 +26,7 @@ const pool = new dequel.Pool({
 });
 
 (async () => {
-  // Guess table name and find table columns and primary key from information schema.
+  // Guess table name and find table columns and primary key from information schema
   await Product.initialize(pool);
 
   console.log(Product.tableName); // => products
@@ -45,7 +45,7 @@ await Product.initialize(pool, {
   tableName: 'awesome_products'
 });
 
-// You can set columns and primary key. But not recommended.
+// You can set columns and primary key. But not recommended
 Product.columns = [ 'uuid', 'name', 'price' ];
 Product.primaryKey = 'uuid';
 ```
@@ -54,52 +54,63 @@ Product.primaryKey = 'uuid';
 
 ### static methods
 
-#### select
+#### Model.select([columns[, clause[, ...values]]])
+
+- `columns`: `string` | `Array`
+- `clause`: `string`
+- `values`: `any`
+- Returns: `Promise<Model[]>`
 
 ```js
-// e.g.
 const records = await Product.select('*');
 
 for (const record of records) {
   console.log(record.name);
 }
 
-// All columns, all records.
+// All columns, all records
 Product.select();
 Product.select(null);
 
-// Specified columns.
+// Specified columns
 Product.select([ 'id', 'name' ]);
 Product.select('id, name');
 
-// With clause.
+// With clause
 Product.select(null, 'WHERE price < $1', 500);
 Product.select(null, 'WHERE price < $1 ORDER BY price', 500);
 ```
 
-#### insert
+#### Model.insert([params[, options]])
+
+- `params`: `Object`
+- `options`: `Object`
+  - `onConflict`: `'update'` | `'nothing'`
+- Returns: `Promise<Model>`
 
 ```js
-// e.g.
 const record = await Product.insert({
   name: 'foo',
   price: 300,
 });
-
 console.log(record.name);
 
-// With defaults.
+// With default values
 Product.insert();
 
-// With options.
+// With options
 Product.insert({ id: 1 }, { onConflict: 'update' });
 Product.insert({ id: 1 }, { onConflict: 'nothing' });
 ```
 
-#### update
+#### Model.update(params[, condition[, ...values]])
+
+- `params`: `Object`
+- `condition`: `string`
+- `values`: `any`
+- Returns: `Promise<Model[]>`
 
 ```js
-// e.g.
 const records = await Product.update({ price: 0 }, 'name = $1', 'dequel');
 
 for (const record of records) {
@@ -110,20 +121,25 @@ for (const record of records) {
 Product.update({ price: 0 });
 ```
 
-#### delete
+#### Model.delete([condition[, ...values]])
+
+- `condition`: `string`
+- `values`: `any`
+- Returns: `Promise<void>`
 
 ```js
-// e.g.
 await Product.delete('id = $1', 1);
 
-// Delete cascade.
+// Delete cascade
 Product.delete();
 ```
 
-#### all
+#### Model.all()
+
+- Returns: `Promise<Model[]>`
 
 ```js
-// Fetch All records.
+// All records
 const records = await Product.all();
 
 for (const record of records) {
@@ -131,16 +147,21 @@ for (const record of records) {
 }
 ```
 
-#### take
+#### Model.take()
+
+- Returns: `Promise<Model>`
 
 ```js
-// Take a record.
+// A record
 const record = await Product.take();
-
 console.log(record.name);
 ```
 
-#### where
+#### Model.where(condition[, ...values])
+
+- `condition`: `string`
+- `values`: `any`
+- Returns: `Promise<Model[]>`
 
 ```js
 // All records that match the conditions
@@ -151,7 +172,11 @@ for (const record of records) {
 }
 ```
 
-#### find
+#### Model.find(condition[, ...values])
+
+- `condition`: `string`
+- `values`: `any`
+- Returns: `Promise<Model>`
 
 ```js
 // First records that match the conditions
@@ -160,25 +185,33 @@ const record = await Product.find('id = $1', 1);
 console.log(record.name);
 ```
 
-#### count
+#### Model.count([condition[, ...values]])
+
+- `condition`: `string`
+- `values`: `any`
+- Returns: `Promise<number>`
 
 ```js
-// Count records.
+// Count records
 const record = await Product.count();
-
 console.log(record.name);
 
-// With conditions.
+// With conditions
 Product.count('name = $1', 'dequel');
 ```
 
-#### execute
+#### Model.execute(query)
+
+- `query`: `string` | `Object`
+  - `text`: `string`
+  - `values`: `any[]`
+- Returns: `Promise<Model[]>`
 
 ```js
-// Execute any query.
+// Execute query
 const records = await Product.execute('SELECT SUM(price) FROM products;');
 
-// With bind params.
+// With bind params
 Product.execute({
   text: 'SELECT name FROM products WHERE id = $1;',
   values: [ 1 ],
@@ -187,12 +220,13 @@ Product.execute({
 
 ### prototype methods
 
-#### save
+#### model.save()
 
 Update if instance has primary key, insert otherwise.
 
+- Returns: `Promise<Model>`
+
 ```js
-// e.g.
 const record = new Product({ name: 'piyo' });
 await record.save();
 
@@ -201,18 +235,20 @@ record.name = 'nyan';
 await record.save();
 ```
 
-#### destroy
+#### model.destroy()
+
+- Returns: `Promise<void>`
 
 ```js
-// e.g.
 const record = await Product.find('id = $1', 1);
 await record.destroy();
 ```
 
-#### toObject
+#### model.toObject()
+
+- Returns: `Object`
 
 ```js
-// e.g.
 const record = await Product.find('id = $1', 1);
 console.log(record.toObject());
 ```
