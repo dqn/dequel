@@ -359,9 +359,23 @@ describe('delete', () => {
       Test.insert(),
     ]);
 
-    await Test.delete('WHERE id <> $1', 1);
+    await Test.delete('id <> $1', 1);
 
     expect(await Test.count()).toBe(1);
+  });
+
+  test('delete cascade', async () => {
+    await Promise.all([
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
+      Test.insert(),
+    ]);
+
+    await Test.delete();
+
+    expect(await Test.count()).toBe(0);
   });
 });
 
