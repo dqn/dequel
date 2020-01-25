@@ -1,0 +1,5 @@
+**/.*
+coverage/
+test/
+babel.config.js
+jest.config.js
