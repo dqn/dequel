@@ -57,7 +57,7 @@ Product.primaryKey = 'uuid';
 
 #### Model.select([columns[, clause[, ...values]]])
 
-- `columns`: `string` | `Array`
+- `columns`: `string` | `string[]`
 - `clause`: `string`
 - `values`: `any`
 - Returns: `Promise<Model[]>`
