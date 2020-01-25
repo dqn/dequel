@@ -12,9 +12,12 @@
     "type": "git",
     "url": "git+https://github.com/dqn/dequel.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "orm",
+    "postgresql"
+  ],
+  "author": "dqn <suyarizzz@gmail.com> (https://github.com/dqn)",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/dqn/dequel/issues"
   },

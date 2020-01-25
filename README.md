@@ -1,14 +1,16 @@
 # dequel
 
+[![npm version](https://img.shields.io/npm/v/dequel.svg)](https://www.npmjs.com/package/dequel)
 [![Build Status](https://travis-ci.com/dqn/dequel.svg?branch=master)](https://travis-ci.com/dqn/dequel)
 [![codecov](https://codecov.io/gh/dqn/dequel/branch/master/graph/badge.svg)](https://codecov.io/gh/dqn/dequel)
+![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)
 
 Simple ORM for PostgreSQL
 
 ## Installation
 
 ```bash
-$ npm install dqn/dequel
+$ npm install --save dequel
 ```
 
 ## Usage
@@ -253,3 +255,7 @@ await record.destroy();
 const record = await Product.find('id = $1', 1);
 console.log(record.toObject());
 ```
+
+## License
+
+MIT
