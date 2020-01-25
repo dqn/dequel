@@ -1,6 +1,7 @@
 # dequel
 
 [![Build Status](https://travis-ci.com/dqn/dequel.svg?branch=master)](https://travis-ci.com/dqn/dequel)
+[![codecov](https://codecov.io/gh/dqn/dequel/branch/master/graph/badge.svg)](https://codecov.io/gh/dqn/dequel)
 
 Simple ORM for PostgreSQL
 

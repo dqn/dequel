@@ -1,7 +1,9 @@
-services:
-  - docker
 language: node_js
 node_js:
   - 10
 before_script:
   - npm run start_test_db
+after_success:
+  - npx codecov
+services:
+  - docker

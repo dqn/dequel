@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  rootDir: 'test/',
+  collectCoverage: true,
   testEnvironment: 'node',
   verbose: true,
 };
